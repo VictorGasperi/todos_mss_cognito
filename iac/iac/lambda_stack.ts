@@ -7,7 +7,7 @@ import { Duration } from 'aws-cdk-lib'
 import * as path from 'path'
 
 export class LambdaStack extends Construct {
-  functionsThatNeedDynamoPermissions: lambda.Function[] = []
+  functionsThatNeedCognitoPermissions: lambda.Function[] = []
   lambdaLayer: lambda.LayerVersion
 
   getUserFunction: lambda.Function
@@ -49,6 +49,6 @@ export class LambdaStack extends Construct {
     this.deleteUserFunction = this.createLambdaApiGatewayIntegration('delete_user', 'POST', apiGatewayResource, environmentVariables)
     this.updateUserFunction = this.createLambdaApiGatewayIntegration('update_user', 'POST', apiGatewayResource, environmentVariables)
 
-    this.functionsThatNeedDynamoPermissions = [this.getUserFunction, this.createUserFunction, this.deleteUserFunction, this.updateUserFunction, this.getAllUsersFunction]
+    this.functionsThatNeedCognitoPermissions = [this.getUserFunction, this.createUserFunction, this.deleteUserFunction, this.updateUserFunction, this.getAllUsersFunction]
   }
 }

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as cdk from 'aws-cdk-lib'
-import { TemplateStack } from './iac/template_stack'
+
 import { adjustLayerDirectory } from './adjust_layer_directory'
 import { config } from 'dotenv'
+import { IacStack } from 'iac/iac_stack'
 config()
 
 console.log('Starting the CDK')
@@ -30,13 +31,13 @@ if (stackName === 'prod') {
 }
 
 const tags = {
-  'project': 'Template',
-  'stage': 'test',
+  'project': 'Todo',
+  'stage': 'dev',
   'stack': 'BACK',
-  'owner': 'Digao'
+  'owner': 'gasperi'
 }
 
-new TemplateStack(app, stackName as string, {
+new IacStack(app, stackName as string, {
   env: {
     region: awsRegion,
     account: awsAccount
