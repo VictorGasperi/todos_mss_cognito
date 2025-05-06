@@ -1,4 +1,3 @@
-import { STATE, toEnum } from '../enums/state_enum'
 import { EntityError } from '../../helpers/errors/domain_errors'
 
 export type UserProps = {
@@ -90,7 +89,7 @@ export class User {
   static validateId(id: string): boolean {
     if (id == null) {
       return false
-    } else if (typeof(id) != 'number') {
+    } else if (typeof(id) != 'string') {
       return false
     }
     return true
@@ -123,7 +122,7 @@ export class User {
   }
 
   static validatePassword(password: String): boolean {
-    if (password == null) {
+    if (password == null || password.length == 0) {
       return false
     } 
 
