@@ -2,40 +2,33 @@ import { STATE, toEnum } from '../enums/state_enum'
 import { EntityError } from '../../helpers/errors/domain_errors'
 
 export type UserProps = {
-  id: number;
+  id: string;
   name: string;
   email: string;
-  state?: STATE;
-}
-
-export type JsonProps = {
-  user_id: number;
-  name: string;
-  email: string;
-  state?: string;
+  password: string;
 }
 
 export class User {
   constructor (public props: UserProps) {
-    if (!User.validateId(props.id as number)) {
-      throw new EntityError('props.id')
+    if (!User.validateId(props.id)) {
+      throw new EntityError('User id')
     }
     this.props.id = props.id
 
     if (!User.validateName(props.name)) {
-      throw new EntityError('props.name')
+      throw new EntityError('User name')
     }
     this.props.name = props.name
 
     if (!User.validateEmail(props.email)) {
-      throw new EntityError('props.email')
+      throw new EntityError('User email')
     }
     this.props.email = props.email
 
-    if (!User.validateState(props.state as STATE)) {
-      throw new EntityError('props.state')
+    if (!User.validatePassword(props.password)) {
+      throw new EntityError('User password')
     }
-    this.props.state = props.state
+    this.props.password = props.password
 
   }
 
@@ -43,9 +36,9 @@ export class User {
     return this.props.id
   }
 
-  set setId(id: number) {
+  set setId(id: string) {
     if (!User.validateId(id)) {
-      throw new EntityError('props.id')
+      throw new EntityError('User id')
     }
     this.props.id = id
   }
@@ -56,7 +49,7 @@ export class User {
 
   set setName(name: string) {
     if (!User.validateName(name)) {
-      throw new EntityError('props.name')
+      throw new EntityError('User name')
     }
     this.props.name = name
   }
@@ -67,41 +60,34 @@ export class User {
 
   set setEmail(email: string) {
     if (!User.validateEmail(email)) {
-      throw new EntityError('props.email')
+      throw new EntityError('User email')
     }
     this.props.email = email
   }
 
-  get state() {
-    return this.props.state
-  }
-
-  set setState(state: STATE) {
-    if (!User.validateState(state)) {
-      throw new EntityError('props.state')
-    }
-    this.props.state = state
+  get password() {
+    return this.props.password
   }
     
-  static fromJSON(json: JsonProps) {
-    return new User({
-      id: json.user_id,
-      name: json.name,
-      email: json.email,
-      state: toEnum(json.state as string)
-    })
-  }
+  // static fromJSON(json: JsonProps) {
+  //   return new User({
+  //     id: json.user_id,
+  //     name: json.name,
+  //     email: json.email,
+  //     state: toEnum(json.state as string)
+  //   })
+  // }
 
-  toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      email: this.email,
-      state: this.state
-    }
-  }
+  // toJSON() {
+  //   return {
+  //     id: this.id,
+  //     name: this.name,
+  //     email: this.email,
+  //     state: this.state
+  //   }
+  // }
 
-  static validateId(id: number): boolean {
+  static validateId(id: string): boolean {
     if (id == null) {
       return false
     } else if (typeof(id) != 'number') {
@@ -136,13 +122,16 @@ export class User {
     return true
   }
 
-  static validateState(state: STATE): boolean {
-    if (state == null) {
+  static validatePassword(password: String): boolean {
+    if (password == null) {
       return false
     } 
-    if (Object.values(STATE).includes(state) == false) {
+
+    if (typeof(password) != 'string'){
       return false
     }
+
+
     return true
   }
 

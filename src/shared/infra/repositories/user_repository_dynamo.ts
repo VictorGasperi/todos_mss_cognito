@@ -56,7 +56,7 @@ export class UserRepositoryDynamo implements IUserRepository {
   async createUser(user: User): Promise<User> {
     if(!User.validateName(user.name)) throw new EntityError('name')
     if(!User.validateEmail(user.email)) throw new EntityError('email')
-    if(!User.validateState(user.state as STATE)) throw new EntityError('state')
+    if(!User.validatePassword(user.state as STATE)) throw new EntityError('state')
 
     user.setId = await this.getUserCounter()
 
