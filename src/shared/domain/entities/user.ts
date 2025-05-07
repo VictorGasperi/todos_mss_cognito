@@ -67,6 +67,13 @@ export class User {
   get password() {
     return this.props.password
   }
+
+  set setPassword(password: string) {
+    if(!User.validatePassword(password)) {
+      throw new EntityError('User password')
+    }
+    this.props.password = password
+  }
     
   // static fromJSON(json: JsonProps) {
   //   return new User({
