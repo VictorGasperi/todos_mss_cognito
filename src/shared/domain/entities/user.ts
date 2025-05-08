@@ -137,8 +137,19 @@ export class User {
       return false
     }
 
-
     return true
+  }
+
+  toDict(): { [ key: string ]: any } {
+
+    return {
+
+      "user_id": this.id,
+      "user_name": this.name,
+      "user_email": this.email
+
+    }
+  
   }
 
 }
