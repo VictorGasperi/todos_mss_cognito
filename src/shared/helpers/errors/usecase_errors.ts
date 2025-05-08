@@ -19,3 +19,15 @@ export class ForbiddenAction extends BaseError {
     super(`The action is forbidden for this ${message}`)
   }
 }
+
+export class UserAlreadyConfirmed extends BaseError {
+  constructor(message: string) {
+    super(`The user email is already confirmed. Context: ${message}`)
+  }
+}
+
+export class InvalidCredentials extends BaseError {
+  constructor(message: string) {
+    super(`${message}`)
+  }
+}
