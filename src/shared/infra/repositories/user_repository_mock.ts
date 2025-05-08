@@ -1,6 +1,6 @@
-import { User } from "@/shared/domain/entities/user";
-import { IUserRepository } from "@/shared/domain/repositories/user_repository_interface";
-import { DuplicatedItem, InvalidCredentials, NoItemsFound, UserAlreadyConfirmed } from "@/shared/helpers/errors/usecase_errors";
+import { User } from "../../domain/entities/user";
+import { IUserRepository } from "../../domain/repositories/user_repository_interface";
+import { DuplicatedItem, InvalidCredentials, NoItemsFound, UserAlreadyConfirmed } from "../../helpers/errors/usecase_errors";
 
 
 export class UserRepositoryMock implements IUserRepository {
@@ -34,7 +34,7 @@ export class UserRepositoryMock implements IUserRepository {
 
     async getUserByEmail(email: string): Promise<User> {
         for (const user of this.users) {
-            if ( user.email === email) return user
+            if ( user.email === email ) return user
         }
 
         throw new NoItemsFound('User email')
@@ -63,11 +63,11 @@ export class UserRepositoryMock implements IUserRepository {
         
         const user = await this.getUserByEmail(email)
 
-        if (new_name != undefined) {
+        if (new_name !== undefined) {
             user.setName = new_name
         }
 
-        if (new_password != undefined) {
+        if (new_password !== undefined) {
             user.setPassword = new_password
         }
 
@@ -114,4 +114,38 @@ export class UserRepositoryMock implements IUserRepository {
 
     }
 
+    async checkToken(token: string): Promise< null | { [key: string]: string; }> {
+        
+        const token_parts = token.split('-')
+
+        if (token_parts.length !== 2 || token_parts[0] !== "valid_acces_token") throw new InvalidCredentials('access token')
+
+        const user_email = token_parts[1]
+        const user = await this.getUserByEmail(user_email)
+
+        if (user === undefined ) return null
+
+        return user.toDict()
+
+    }
+
+    async refreshToken(refresh_token: string): Promise< null | { [key: string]: string; }> {
+        
+        const token_parts = refresh_token.split('-')
+
+        if (token_parts.length !== 2 || token_parts[0] !== "valid_refresh_token") throw new InvalidCredentials('refresh token')
+
+        const user_email = token_parts[1]
+
+        const user = await this.getUserByEmail(user_email)
+
+        if (user === undefined) return null
+
+        return {
+            "access_token": "valid_access_token-" + user_email,
+            "refresh_token": "valid_refresh_token-" + user_email,
+            "id_token": "valid_id_token-" + user_email
+        }
+
+    }
 }
