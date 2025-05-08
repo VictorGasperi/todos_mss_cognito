@@ -7,7 +7,7 @@ export interface IUserRepository {
   updateUser(email: string, new_name?: string, new_password?: string): Promise<User>
   deleteUser(email: string): Promise<User>
   confirmUserEmail(email: string, code: number): Promise<boolean>
-  loginUser(email: string, password: string): Promise<{ [key: string]: string }>
+  loginUser(email: string, password: string): Promise<void | { [key: string]: string; }>
   checkToken(token: string): Promise< { [key: string]: string } >
   refreshToken(refresh_token: string): Promise<{ [key: string]: string }>
 }

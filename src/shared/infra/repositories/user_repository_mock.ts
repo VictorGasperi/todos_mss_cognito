@@ -1,6 +1,6 @@
 import { User } from "@/shared/domain/entities/user";
 import { IUserRepository } from "@/shared/domain/repositories/user_repository_interface";
-import { DuplicatedItem, NoItemsFound } from "@/shared/helpers/errors/usecase_errors";
+import { DuplicatedItem, InvalidCredentials, NoItemsFound, UserAlreadyConfirmed } from "@/shared/helpers/errors/usecase_errors";
 
 
 export class UserRepositoryMock implements IUserRepository {
@@ -25,6 +25,8 @@ export class UserRepositoryMock implements IUserRepository {
             password: "pass3"
         })
     ]
+
+    private confirmed_users: User[] = [ this.users[2] ]
 
     async getAllUsers(): Promise<User[]> {
         return this.users
@@ -70,6 +72,45 @@ export class UserRepositoryMock implements IUserRepository {
         }
 
         return user
+
+    }
+
+    async deleteUser(email: string): Promise<User> {
+        
+        const user_to_delete = await this.getUserByEmail(email)
+
+        this.users = this.users.filter( user => user.email !== email )
+
+        return user_to_delete
+
+    }
+
+    async confirmUserEmail(email: string, code: number): Promise<boolean> {
+        
+        const user = await this.getUserByEmail(email)
+
+        if (this.users.includes(user)) throw new UserAlreadyConfirmed("user")
+
+        if (code !== 123456) throw new InvalidCredentials('confirmation code')
+
+        this.confirmed_users.push(user)
+
+        return true
+
+    }
+
+    async loginUser(email: string, password: string): Promise<void | { [key: string]: string; }> {
+        
+        const user = await this.getUserByEmail(email)
+        const dict_response:  { [key: string]: string } = {}
+
+        if (user.password === password) {
+            dict_response["access_token"] = "valid_access_token-" + user.email
+            dict_response["refresh_token"] = "valid_refresh_token-" + user.email
+            dict_response["id_token"] = "valid_id_token-" + user.email
+
+            return dict_response
+        }
 
     }
 
