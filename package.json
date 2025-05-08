@@ -20,10 +20,12 @@
     "aws-sdk": "^2.1506.0",
     "aws-sdk-js-codemod": "^0.28.2",
     "dotenv": "^16.3.1",
+    "lodash": "^4.17.21",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
+    "@types/lodash": "^4.17.16",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
     "eslint": "^8.45.0",
