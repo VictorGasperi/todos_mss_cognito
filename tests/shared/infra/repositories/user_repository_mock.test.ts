@@ -1,6 +1,6 @@
 import { DuplicateItemException } from '@aws-sdk/client-dynamodb';
 import { User } from '../../../../src/shared/domain/entities/user';
-import { DuplicatedItem, NoItemsFound } from '../../../../src/shared/helpers/errors/usecase_errors';
+import { DuplicatedItem, InvalidCredentials, NoItemsFound, UserAlreadyConfirmed } from '../../../../src/shared/helpers/errors/usecase_errors';
 import { UserRepositoryMock } from '../../../../src/shared/infra/repositories/user_repository_mock'
 import { isEqual, reject } from 'lodash';
 
@@ -96,7 +96,99 @@ describe("Assert User Repository Mock is correct", () => {
 
         const repo = new UserRepositoryMock()
 
+        const is_user_verified = await repo.confirmUserEmail('email2@email.com', 123456)
 
-    })
+        expect(is_user_verified).toBe(true)
+
+    });
+
+    it("Should throw an UserAlreadyConfirmed error", async () => {
+
+        const repo = new UserRepositoryMock()
+
+        const is_user_verified = repo.confirmUserEmail('email3@email.com', 123456)
+
+        expect(is_user_verified)
+        .rejects
+        .toThrow(UserAlreadyConfirmed)
+
+    });
+
+    it("Should throw an InvalidCredentials error", () => {
+
+        const repo = new UserRepositoryMock()
+
+        expect(
+            repo.confirmUserEmail('email2@email.com', 654321)
+        )
+        .rejects
+        .toThrow(InvalidCredentials)
+    });
+
+    it("Should login an user", async () => {
+
+        const repo = new UserRepositoryMock()
+        const user_credentials = await repo.loginUser('email3@email.com', 'pass3')
+
+        const expected = {
+            "access_token": "valid_access_token-email3@email.com",
+            "refresh_token": "valid_refresh_token-email3@email.com",
+            "id_token": "valid_id_token-email3@email.com"
+        }
+
+        expect(user_credentials).toEqual(expected)
+
+    });
+
+    it("Should check the user token and retrieve its information", async () => {
+
+        const repo = new UserRepositoryMock()
+        const user_info = await repo.checkToken("valid_access_token-email@email.com")
+
+        const expected = { 
+            "user_id": "1",
+            "user_name": "Victor Gasperi",
+            "user_email": "email@email.com"
+        }
+
+        expect(user_info).toEqual(expected)
+
+    });
+
+    it("Should throw an InvalidCredentials for the access token",  () => {
+        const repo = new UserRepositoryMock()
+        const user_info = repo.checkToken("invalid_token")
+
+        expect(user_info)
+        .rejects
+        .toThrow(InvalidCredentials)
+
+    });
+
+    it("Should update the tokens with a valid refresh_token", async () => {
+
+        const repo = new UserRepositoryMock()
+        const new_user_credentials = await repo.refreshToken("valid_refresh_token-email3@email.com")
+
+        const expected = {
+            "access_token": "valid_access_token-email3@email.com",
+            "refresh_token": "valid_refresh_token-email3@email.com",
+            "id_token": "valid_id_token-email3@email.com"
+        }
+
+        expect(new_user_credentials).toEqual(expected)
+
+    });
+
+    it("Should throw an InvalidCredentials for the refresh_token", () => {
+
+        const repo = new UserRepositoryMock()
+
+        expect(
+            repo.refreshToken('invalid_refresh_token')
+        )
+        .rejects
+        .toThrow(InvalidCredentials)
+    });
 
 })
