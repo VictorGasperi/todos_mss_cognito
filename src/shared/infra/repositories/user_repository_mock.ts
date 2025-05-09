@@ -59,31 +59,6 @@ export class UserRepositoryMock implements IUserRepository {
         
     }
 
-    async updateUser(email: string, new_name?: string, new_password?: string): Promise<User> {
-        
-        const user = await this.getUserByEmail(email)
-
-        if (new_name !== undefined) {
-            user.setName = new_name
-        }
-
-        if (new_password !== undefined) {
-            user.setPassword = new_password
-        }
-
-        return user
-
-    }
-
-    async deleteUser(email: string): Promise<User> {
-        
-        const user_to_delete = await this.getUserByEmail(email)
-
-        this.users = this.users.filter( user => user.email !== email )
-
-        return user_to_delete
-
-    }
 
     async confirmUserEmail(email: string, code: number): Promise<boolean> {
         

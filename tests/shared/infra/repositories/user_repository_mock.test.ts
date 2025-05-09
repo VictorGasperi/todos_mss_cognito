@@ -67,31 +67,6 @@ describe("Assert User Repository Mock is correct", () => {
 
     })
 
-    it("Should update an user", async () => {
-
-        const repo = new UserRepositoryMock()
-
-        const user = await repo.updateUser("email2@email.com", "Valentin")
-
-        const all_users = await repo.getAllUsers()
-
-        const expected_user = user.toDict()
-
-        expect( all_users[1].toDict() ).toEqual(expected_user)
-
-    });
-
-    it("Should delete an user", async () => {
-
-        const repo = new UserRepositoryMock()
-        const user_deleted = await repo.deleteUser("email2@email.com")
-        const all_users = await repo.getAllUsers()
-
-        expect(all_users.length).toBe(2)
-        expect(user_deleted.name).toEqual("Gasperi Victor")
-
-    });
-
     it("Should confirm an user email", async () => {
 
         const repo = new UserRepositoryMock()
