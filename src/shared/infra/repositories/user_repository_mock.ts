@@ -89,7 +89,7 @@ export class UserRepositoryMock implements IUserRepository {
         
         const user = await this.getUserByEmail(email)
 
-        if (this.users.includes(user)) throw new UserAlreadyConfirmed("user")
+        if (this.confirmed_users.includes(user)) throw new UserAlreadyConfirmed("user")
 
         if (code !== 123456) throw new InvalidCredentials('confirmation code')
 
@@ -118,7 +118,7 @@ export class UserRepositoryMock implements IUserRepository {
         
         const token_parts = token.split('-')
 
-        if (token_parts.length !== 2 || token_parts[0] !== "valid_acces_token") throw new InvalidCredentials('access token')
+        if (token_parts.length !== 2 || token_parts[0] !== "valid_access_token") throw new InvalidCredentials('access token')
 
         const user_email = token_parts[1]
         const user = await this.getUserByEmail(user_email)
