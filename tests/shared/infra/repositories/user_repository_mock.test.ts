@@ -7,16 +7,16 @@ import { isEqual, reject } from 'lodash';
 
 describe("Assert User Repository Mock is correct", () => {
 
-    it("Should retrieve all users", async () => {
+    // it("Should retrieve all users", async () => {
 
-        const repo = new UserRepositoryMock()
+    //     const repo = new UserRepositoryMock()
 
-        const users = await repo.getAllUsers()
+    //     const users = await repo.getAllUsers()
 
-        expect(users.length === 3)
-        expect(users[2].name === "Gasperi Victor")
+    //     expect(users.length === 3)
+    //     expect(users[2].name === "Gasperi Victor")
 
-    });
+    // });
 
     it("Should get user by email", async () => {
 
@@ -51,7 +51,7 @@ describe("Assert User Repository Mock is correct", () => {
             "user_email": "yasmin@email.com"
         }
 
-        expect((await repo.getAllUsers()).length === 4)
+        expect(repo.users.length === 4)
         expect(user.toDict()).toEqual(expected_user)
 
     });
@@ -67,38 +67,38 @@ describe("Assert User Repository Mock is correct", () => {
 
     })
 
-    it("Should confirm an user email", async () => {
+    // it("Should confirm an user email", async () => {
 
-        const repo = new UserRepositoryMock()
+    //     const repo = new UserRepositoryMock()
 
-        const is_user_verified = await repo.confirmUserEmail('email2@email.com', 123456)
+    //     const is_user_verified = await repo.confirmUserEmail('email2@email.com', 123456)
 
-        expect(is_user_verified).toBe(true)
+    //     expect(is_user_verified).toBe(true)
 
-    });
+    // });
 
-    it("Should throw an UserAlreadyConfirmed error", async () => {
+    // it("Should throw an UserAlreadyConfirmed error", async () => {
 
-        const repo = new UserRepositoryMock()
+    //     const repo = new UserRepositoryMock()
 
-        const is_user_verified = repo.confirmUserEmail('email3@email.com', 123456)
+    //     const is_user_verified = repo.confirmUserEmail('email3@email.com', 123456)
 
-        expect(is_user_verified)
-        .rejects
-        .toThrow(UserAlreadyConfirmed)
+    //     expect(is_user_verified)
+    //     .rejects
+    //     .toThrow(UserAlreadyConfirmed)
 
-    });
+    // });
 
-    it("Should throw an InvalidCredentials error", () => {
+    // it("Should throw an InvalidCredentials error", () => {
 
-        const repo = new UserRepositoryMock()
+    //     const repo = new UserRepositoryMock()
 
-        expect(
-            repo.confirmUserEmail('email2@email.com', 654321)
-        )
-        .rejects
-        .toThrow(InvalidCredentials)
-    });
+    //     expect(
+    //         repo.confirmUserEmail('email2@email.com', 654321)
+    //     )
+    //     .rejects
+    //     .toThrow(InvalidCredentials)
+    // });
 
     it("Should login an user", async () => {
 

@@ -31,3 +31,9 @@ export class InvalidCredentials extends BaseError {
     super(`${message}`)
   }
 }
+
+export class EmailNotVerified extends BaseError {
+  constructor(message: string) {
+    super(`${message}`)
+  }
+}

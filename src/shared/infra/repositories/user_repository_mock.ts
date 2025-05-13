@@ -5,7 +5,7 @@ import { DuplicatedItem, InvalidCredentials, NoItemsFound, UserAlreadyConfirmed 
 
 export class UserRepositoryMock implements IUserRepository {
 
-    private users: User[] = [
+    private _users: User[] = [
         new User({
             id: "1",
             name: "Victor Gasperi",
@@ -24,13 +24,21 @@ export class UserRepositoryMock implements IUserRepository {
             email: "email3@email.com",
             password: "pass3"
         })
-    ]
+    ];
+    public get users(): User[] {
+        return this._users;
+    }
+    // public set users(value: User[]) {
+    //     this._users = value;
+    // }
+
+    
 
     private confirmed_users: User[] = [ this.users[2] ]
 
-    async getAllUsers(): Promise<User[]> {
-        return this.users
-    }
+    // async getAllUsers(): Promise<User[]> {
+    //     return this.users
+    // }
 
     async getUserByEmail(email: string): Promise<User> {
         for (const user of this.users) {
@@ -60,19 +68,19 @@ export class UserRepositoryMock implements IUserRepository {
     }
 
 
-    async confirmUserEmail(email: string, code: number): Promise<boolean> {
+    // async confirmUserEmail(email: string, code: number): Promise<boolean> {
         
-        const user = await this.getUserByEmail(email)
+    //     const user = await this.getUserByEmail(email)
 
-        if (this.confirmed_users.includes(user)) throw new UserAlreadyConfirmed("user")
+    //     if (this.confirmed_users.includes(user)) throw new UserAlreadyConfirmed("user")
 
-        if (code !== 123456) throw new InvalidCredentials('confirmation code')
+    //     if (code !== 123456) throw new InvalidCredentials('confirmation code')
 
-        this.confirmed_users.push(user)
+    //     this.confirmed_users.push(user)
 
-        return true
+    //     return true
 
-    }
+    // }
 
     async loginUser(email: string, password: string): Promise<void | { [key: string]: string; }> {
         
@@ -89,7 +97,7 @@ export class UserRepositoryMock implements IUserRepository {
 
     }
 
-    async checkToken(token: string): Promise< null | { [key: string]: string; }> {
+    async checkToken(token: string): Promise< { [key: string]: string; } | undefined > {
         
         const token_parts = token.split('-')
 
@@ -98,13 +106,13 @@ export class UserRepositoryMock implements IUserRepository {
         const user_email = token_parts[1]
         const user = await this.getUserByEmail(user_email)
 
-        if (user === undefined ) return null
+        if (user === undefined ) return;
 
         return user.toDict()
 
     }
 
-    async refreshToken(refresh_token: string): Promise< null | { [key: string]: string; }> {
+    async refreshToken(refresh_token: string): Promise< { [key: string]: string; } | undefined > {
         
         const token_parts = refresh_token.split('-')
 
@@ -114,7 +122,7 @@ export class UserRepositoryMock implements IUserRepository {
 
         const user = await this.getUserByEmail(user_email)
 
-        if (user === undefined) return null
+        if (user === undefined) return;
 
         return {
             "access_token": "valid_access_token-" + user_email,

@@ -1,19 +1,14 @@
 import { EntityError } from '../../helpers/errors/domain_errors'
 
 export type UserProps = {
-  id: string;
+  id?: string;
   name: string;
   email: string;
-  password: string;
+  password: string | null;
 }
 
 export class User {
   constructor (public props: UserProps) {
-    if (!User.validateId(props.id)) {
-      throw new EntityError('User id')
-    }
-    this.props.id = props.id
-
     if (!User.validateName(props.name)) {
       throw new EntityError('User name')
     }
@@ -128,14 +123,10 @@ export class User {
     return true
   }
 
-  static validatePassword(password: String): boolean {
-    if (password == null || password.length == 0) {
+  static validatePassword(password: String | null): boolean {
+    if (password?.length == 0) {
       return false
     } 
-
-    if (typeof(password) != 'string'){
-      return false
-    }
 
     return true
   }
