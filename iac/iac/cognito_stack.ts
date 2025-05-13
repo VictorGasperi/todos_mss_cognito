@@ -14,6 +14,28 @@ import {
 
 import { RemovalPolicy, CfnOutput } from 'aws-cdk-lib'
 import * as os from 'os'
+import path from 'path';
+import * as fs from 'fs'
+
+function save_ids_on_env(userPool: UserPool, client: UserPoolClient): void {
+  const envPath = path.resolve(process.cwd(), '.env');
+
+// Evita sobrescrever se já existe
+let envContent = '';
+if (fs.existsSync(envPath)) {
+  envContent = fs.readFileSync(envPath, 'utf-8');
+}
+
+if (!envContent.includes('COGNITO_USER_POOL_ID')) {
+  envContent += `\nCOGNITO_USER_POOL_ID=${userPool.userPoolId}`;
+}
+if (!envContent.includes('COGNITO_CLIENT_ID')) {
+  envContent += `\nCOGNITO_CLIENT_ID=${client.userPoolClientId}`;
+}
+
+// Salva
+fs.writeFileSync(envPath, envContent.trim() + '\n');
+}
 
 export class CognitoStack extends Construct {
   public readonly userPool: UserPool
@@ -51,9 +73,24 @@ export class CognitoStack extends Construct {
       } as AuthFlow,
     })
 
+    save_ids_on_env(this.userPool, this.client)
+
     new CfnOutput(this, 'CognitoRemovalPolicy', {
       value: removalPolicy,
       exportName: 'CognitoRemovalPolicyValue',
     })
+
+    new CfnOutput(this, 'UserPoolId', {
+      value: this.userPool.userPoolId,
+      exportName: 'UserPoolId',
+    });
+
+    new CfnOutput(this, 'UserPoolClientId', {
+      value: this.client.userPoolClientId,
+      exportName: 'UserPoolClientId',
+    });
+
+    
+
   }
 }
