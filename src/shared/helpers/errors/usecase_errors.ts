@@ -4,7 +4,6 @@ export class NoItemsFound extends BaseError {
   constructor(message: string) {
     super(`No items found for ${message}`)
   }
-
 }
 
 export class DuplicatedItem extends BaseError {
