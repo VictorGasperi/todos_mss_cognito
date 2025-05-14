@@ -7,6 +7,11 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 
 import { CognitoStack } from './cognito_stack';
 import { LambdaStack } from './lambda_stack';
+import { config } from 'dotenv';
+import path from 'path';
+config({
+  path: path.resolve(__dirname, '..', '..', '.env')
+})
 
 export class IacStack extends Stack {
   private readonly githubRef = process.env.STAGE!;
@@ -37,16 +42,14 @@ export class IacStack extends Stack {
         }
       });
   
-      const environmentVariables = {
-        STAGE: stage,
-        USER_POOL_ID: cognitoStack.userPool.userPoolId,
-        CLIENT_ID: cognitoStack.client.userPoolClientId,
-        REGION: this.region,
-        MSS_NAME: this.mssName
-      };
+      const ENVIRONMENT_VARIABLES = {
+        'STAGE': process.env.STAGE as string,
+        'REGION': process.env.REGION as string,
+        'MSS_NAME': process.env.MSS_NAME as string
+      }
   
       const lambdaStack = new LambdaStack(this, apiGatewayResource, {
-        environmentVariables
+        ENVIRONMENT_VARIABLES
       });
   
       const cognitoAdminPolicy = new iam.PolicyStatement({

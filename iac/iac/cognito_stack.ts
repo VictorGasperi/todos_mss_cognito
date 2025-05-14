@@ -18,7 +18,7 @@ import path from 'path';
 import * as fs from 'fs'
 
 function save_ids_on_env(userPool: UserPool, client: UserPoolClient): void {
-  const envPath = path.resolve(process.cwd(), '.env');
+  const envPath = path.resolve(__dirname, '..', '..', '.env');
 
 // Evita sobrescrever se já existe
 let envContent = '';
@@ -27,10 +27,10 @@ if (fs.existsSync(envPath)) {
 }
 
 if (!envContent.includes('COGNITO_USER_POOL_ID')) {
-  envContent += `\nCOGNITO_USER_POOL_ID=${userPool.userPoolId}`;
+  envContent += `\nCOGNITO_USER_POOL_ID=` + userPool.userPoolId;
 }
 if (!envContent.includes('COGNITO_CLIENT_ID')) {
-  envContent += `\nCOGNITO_CLIENT_ID=${client.userPoolClientId}`;
+  envContent += `\nCOGNITO_CLIENT_ID=` + client.userPoolClientId;
 }
 
 // Salva
@@ -73,7 +73,7 @@ export class CognitoStack extends Construct {
       } as AuthFlow,
     })
 
-    save_ids_on_env(this.userPool, this.client)
+    // save_ids_on_env(this.userPool, this.client)
 
     new CfnOutput(this, 'CognitoRemovalPolicy', {
       value: removalPolicy,
@@ -90,7 +90,6 @@ export class CognitoStack extends Construct {
       exportName: 'UserPoolClientId',
     });
 
-    
-
+  
   }
 }

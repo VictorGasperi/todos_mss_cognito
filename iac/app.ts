@@ -3,8 +3,12 @@ import * as cdk from 'aws-cdk-lib'
 
 import { adjustLayerDirectory } from './adjust_layer_directory'
 import { config } from 'dotenv'
-import { IacStack } from 'iac/iac_stack'
-config()
+import { IacStack } from './iac/iac_stack'
+import path from 'path'
+
+config({
+  path: path.resolve(__dirname, '..', '..', '.env')
+})
 
 console.log('Starting the CDK')
 

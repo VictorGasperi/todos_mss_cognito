@@ -43,12 +43,12 @@ export class LambdaStack extends Construct {
       compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
     })
 
-    this.getUserFunction = this.createLambdaApiGatewayIntegration('get_user', 'GET', apiGatewayResource, environmentVariables)
-    this.getAllUsersFunction = this.createLambdaApiGatewayIntegration('get_all_users', 'GET', apiGatewayResource, environmentVariables)
+    // this.getUserFunction = this.createLambdaApiGatewayIntegration('get_user', 'GET', apiGatewayResource, environmentVariables)
+    // this.getAllUsersFunction = this.createLambdaApiGatewayIntegration('get_all_users', 'GET', apiGatewayResource, environmentVariables)
     this.createUserFunction = this.createLambdaApiGatewayIntegration('create_user', 'POST', apiGatewayResource, environmentVariables)
-    this.deleteUserFunction = this.createLambdaApiGatewayIntegration('delete_user', 'POST', apiGatewayResource, environmentVariables)
-    this.updateUserFunction = this.createLambdaApiGatewayIntegration('update_user', 'POST', apiGatewayResource, environmentVariables)
+    // this.deleteUserFunction = this.createLambdaApiGatewayIntegration('delete_user', 'POST', apiGatewayResource, environmentVariables)
+    // this.updateUserFunction = this.createLambdaApiGatewayIntegration('update_user', 'POST', apiGatewayResource, environmentVariables)
 
-    this.functionsThatNeedCognitoPermissions = [this.getUserFunction, this.createUserFunction, this.deleteUserFunction, this.updateUserFunction, this.getAllUsersFunction]
+    this.functionsThatNeedCognitoPermissions = [this.createUserFunction]
   }
 }
