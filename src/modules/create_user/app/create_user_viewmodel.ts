@@ -11,14 +11,25 @@ export class CreateUserViewmodel {
     this.name = props.name
   }
 
+  // toJSON() {
+  //   return JSON.stringify({
+  //     user: {
+  //       id: this.id,
+  //       name: this.name,
+  //       email: this.email,
+  //     },
+  //     message: 'The user was created successfully'
+  //   })
+  // }
+
   toJSON() {
-    return JSON.stringify({
+    return {
       user: {
         id: this.id,
         name: this.name,
         email: this.email,
       },
-      message: 'The user was created successfully'
-    })
+      message: 'The user was created successfully',
+    }
   }
 }
