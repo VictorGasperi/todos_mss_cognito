@@ -8,7 +8,7 @@ import { CreateUserViewmodel } from './create_user_viewmodel'
 import { User } from '../../../shared/domain/entities/user'
 import { NoItemsFound } from '../../../shared/helpers/errors/usecase_errors'
 import { EntityError } from '../../../shared/helpers/errors/domain_errors'
-import { BadRequest, InternalServerError, NotFound } from '../../../shared/helpers/external_interfaces/http_codes'
+import { BadRequest, Created, InternalServerError, NotFound } from '../../../shared/helpers/external_interfaces/http_codes'
 
 export class CreateUserController {
   constructor(private usecase: CreateUserUsecase) {}
@@ -49,7 +49,8 @@ export class CreateUserController {
 
       const viewmodel = new CreateUserViewmodel(user.props)
 
-      return viewmodel.toJSON()
+      return new Created(viewmodel.toJSON())
+      
     } catch (error: any) {
       if (error instanceof NoItemsFound) {
         return new NotFound(error.message)
