@@ -59,9 +59,13 @@ export class IacStack extends Stack {
         resources: [cognitoStack.userPool.userPoolArn],
       });
   
-      lambdaStack.functionsThatNeedCognitoPermissions.forEach(fn => {
-        fn.addToRolePolicy(cognitoAdminPolicy);
-      });
+      // lambdaStack.functionsThatNeedCognitoPermissions.forEach(fn => {
+      //   fn.addToRolePolicy(cognitoAdminPolicy);
+      // });
+
+      for ( const fn of lambdaStack.functionsThatNeedCognitoPermissions ) {
+        fn.addToRolePolicy(cognitoAdminPolicy)
+      };
 
     new CfnOutput(this, `AuthRestApiUrl-${this.githubRef}`, {
       value: `${restApi.url}mss-cognito`,
