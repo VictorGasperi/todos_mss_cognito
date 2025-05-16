@@ -27,10 +27,11 @@ export class IacStack extends Stack {
           allowOrigins: apigateway.Cors.ALL_ORIGINS,
           allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
           allowHeaders: ['*']
+        },
+        deployOptions: {
+          stageName: process.env.STAGE
         }
       });
-  
-      const stage = 'DEV';
   
       const cognitoStack = new CognitoStack(this, `todo_cognito_stack_${this.githubRef}`);
   
@@ -45,12 +46,12 @@ export class IacStack extends Stack {
       const ENVIRONMENT_VARIABLES = {
         'STAGE': process.env.STAGE as string,
         'REGION': process.env.REGION as string,
-        'MSS_NAME': process.env.MSS_NAME as string
+        'MSS_NAME': process.env.MSS_NAME as string,
+        'COGNITO_USER_POOL_ID': process.env.COGNITO_USER_POOL_ID as string,
+        'COGNITO_CLIENT_ID': process.env.COGNITO_CLIENT_ID as string
       }
   
-      const lambdaStack = new LambdaStack(this, apiGatewayResource, {
-        ENVIRONMENT_VARIABLES
-      });
+      const lambdaStack = new LambdaStack(this, apiGatewayResource, ENVIRONMENT_VARIABLES);
   
       const cognitoAdminPolicy = new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,

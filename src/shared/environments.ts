@@ -2,8 +2,11 @@ import { STAGE } from './domain/enums/stage_enum'
 import { IUserRepository } from './domain/repositories/user_repository_interface'
 import { UserRepositoryCognito } from './infra/repositories/user_repository_cognito'
 import { UserRepositoryMock } from './infra/repositories/user_repository_mock'
+import path from 'path';
 import { config } from 'dotenv'
-config()
+config({
+  path: path.resolve(__dirname, '..', '..', '.env')
+})
 
 export class Environments {
   stage: STAGE = STAGE.TEST
