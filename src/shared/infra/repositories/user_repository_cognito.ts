@@ -11,6 +11,7 @@ import {
   InitiateAuthCommand,
   AuthFlowType,
   GetUserCommand,
+  SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider'
 import { CognitoAttributes, UserCognitoDTO } from '../dto/user_cognito_dto'
 import { EmailNotVerified, InvalidCredentials } from '../../../../src/shared/helpers/errors/usecase_errors'
@@ -47,44 +48,75 @@ export class UserRepositoryCognito implements IUserRepository {
     }
   }
 
+  // async createUser(
+  //   user_name: string,
+  //   user_email: string,
+  //   user_password: string,
+  // ): Promise< User | undefined > {
+  //   const user = new User({
+  //     name: user_name,
+  //     email: user_email,
+  //     password: user_password,
+  //   })
+
+  //   const cognito_attr = UserCognitoDTO.fromEntity(user).toCognitoAttributes()
+
+  //   try {
+
+  //       const command = new AdminCreateUserCommand({
+  //           UserPoolId: this.IDs.user_pool_id,
+  //           Username: user_email,
+  //           UserAttributes: cognito_attr
+  //       })
+
+  //       const response: any = await this.client.send(command)
+
+  //       await this.client.send(new AdminSetUserPasswordCommand({
+  //           UserPoolId: this.IDs.user_pool_id,
+  //           Username: user_email,
+  //           Password: user_password,
+  //           Permanent: true
+  //       }))
+
+  //       const user_id = response.User?.Attributes?.find( (attr: CognitoAttributes) => attr.Name === 'sub') as CognitoAttributes
+  //       user.setId = user_id?.Value
+
+  //       return user
+  //   } catch (err) {
+  //       throw err
+  //   }
+  // }
+
   async createUser(
-    user_name: string,
-    user_email: string,
-    user_password: string,
-  ): Promise< User | undefined > {
-    const user = new User({
-      name: user_name,
-      email: user_email,
-      password: user_password,
-    })
+  user_name: string,
+  user_email: string,
+  user_password: string,
+): Promise<User | undefined> {
+  const user = new User({
+    name: user_name,
+    email: user_email,
+    password: user_password,
+  });
 
-    const cognito_attr = UserCognitoDTO.fromEntity(user).toCognitoAttributes()
+  const cognito_attr = UserCognitoDTO.fromEntity(user).toCognitoAttributes();
 
-    try {
+  try {
+    
+    const command = new SignUpCommand({
+      ClientId: this.IDs.client_id,
+      Username: user_email,
+      Password: user_password,
+      UserAttributes: cognito_attr,
+    });
 
-        const command = new AdminCreateUserCommand({
-            UserPoolId: this.IDs.user_pool_id,
-            Username: user_email,
-            UserAttributes: cognito_attr
-        })
+    const response = await this.client.send(command);
+    user.setId = response.UserSub || ''; 
 
-        const response: any = await this.client.send(command)
-
-        await this.client.send(new AdminSetUserPasswordCommand({
-            UserPoolId: this.IDs.user_pool_id,
-            Username: user_email,
-            Password: user_password,
-            Permanent: true
-        }))
-
-        const user_id = response.User?.Attributes?.find( (attr: CognitoAttributes) => attr.Name === 'sub') as CognitoAttributes
-        user.setId = user_id?.Value
-
-        return user
-    } catch (err) {
-        throw err
-    }
+    return user;
+  } catch (err) {
+    throw err;
   }
+}
 
   async loginUser(email: string, password: string): Promise< void | { [key: string]: string | undefined } > {
       
